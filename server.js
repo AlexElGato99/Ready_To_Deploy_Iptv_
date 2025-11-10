@@ -2,14 +2,25 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
 const PORT = process.env.PORT || 8080;
+
+// Rate limiting middleware
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: 'Too many requests from this IP, please try again later.'
+});
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
+app.use(limiter);
 
 // Load channel configuration
 function loadChannels() {
