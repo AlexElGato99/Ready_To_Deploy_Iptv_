@@ -1,0 +1,32 @@
+{
+  "programs": [
+    {
+      "channel": "demo1",
+      "start": "2025-11-10T08:00:00Z",
+      "end": "2025-11-10T09:00:00Z",
+      "title": "Morning Show",
+      "description": "Start your day with the latest news and entertainment"
+    },
+    {
+      "channel": "demo1",
+      "start": "2025-11-10T09:00:00Z",
+      "end": "2025-11-10T10:00:00Z",
+      "title": "Movie Time",
+      "description": "Feature film presentation"
+    },
+    {
+      "channel": "demo2",
+      "start": "2025-11-10T08:00:00Z",
+      "end": "2025-11-10T09:00:00Z",
+      "title": "News Hour",
+      "description": "Breaking news and current events"
+    },
+    {
+      "channel": "demo3",
+      "start": "2025-11-10T08:00:00Z",
+      "end": "2025-11-10T10:00:00Z",
+      "title": "Sports Highlights",
+      "description": "Daily sports coverage and highlights"
+    }
+  ]
+}

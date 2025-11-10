@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPTV Server</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        .info-box {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .endpoint {
+            background: #e9ecef;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .endpoint-url {
+            font-family: 'Courier New', monospace;
+            color: #495057;
+            flex: 1;
+        }
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #5568d3;
+        }
+        .status {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background: #28a745;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .channels-list {
+            margin-top: 20px;
+        }
+        .channel {
+            background: white;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+        }
+        .channel-logo {
+            width: 50px;
+            height: 50px;
+            margin-right: 15px;
+            border-radius: 5px;
+        }
+        .channel-info {
+            flex: 1;
+        }
+        .channel-name {
+            font-weight: bold;
+            color: #333;
+        }
+        .channel-group {
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📺 IPTV Server</h1>
+        <p class="subtitle"><span class="status"></span>Server is running</p>
+        
+        <div class="info-box">
+            <h3>Available Endpoints</h3>
+            
+            <div class="endpoint">
+                <span class="endpoint-url">/playlist.m3u</span>
+                <a href="/playlist.m3u" class="btn" download>Download Playlist</a>
+            </div>
+            
+            <div class="endpoint">
+                <span class="endpoint-url">/api/channels</span>
+                <button class="btn" onclick="loadChannels()">View Channels</button>
+            </div>
+            
+            <div class="endpoint">
+                <span class="endpoint-url">/api/epg</span>
+                <button class="btn" onclick="loadEPG()">View EPG</button>
+            </div>
+            
+            <div class="endpoint">
+                <span class="endpoint-url">/health</span>
+                <button class="btn" onclick="checkHealth()">Check Health</button>
+            </div>
+        </div>
+
+        <div id="channels-container"></div>
+    </div>
+
+    <script>
+        async function loadChannels() {
+            try {
+                const response = await fetch('/api/channels');
+                const channels = await response.json();
+                displayChannels(channels);
+            } catch (error) {
+                alert('Error loading channels: ' + error.message);
+            }
+        }
+
+        function displayChannels(channels) {
+            const container = document.getElementById('channels-container');
+            container.innerHTML = '<div class="channels-list"><h3>Available Channels</h3></div>';
+            const list = container.querySelector('.channels-list');
+            
+            channels.forEach(channel => {
+                const channelDiv = document.createElement('div');
+                channelDiv.className = 'channel';
+                channelDiv.innerHTML = `
+                    <img src="${channel.logo}" alt="${channel.name}" class="channel-logo" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2250%22 height=%2250%22%3E%3Crect fill=%22%23ddd%22 width=%2250%22 height=%2250%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22%3E📺%3C/text%3E%3C/svg%3E'">
+                    <div class="channel-info">
+                        <div class="channel-name">${channel.name}</div>
+                        <div class="channel-group">${channel.group}</div>
+                    </div>
+                `;
+                list.appendChild(channelDiv);
+            });
+        }
+
+        async function loadEPG() {
+            try {
+                const response = await fetch('/api/epg');
+                const data = await response.json();
+                alert(`EPG Data:\n\n${JSON.stringify(data, null, 2)}`);
+            } catch (error) {
+                alert('Error loading EPG: ' + error.message);
+            }
+        }
+
+        async function checkHealth() {
+            try {
+                const response = await fetch('/health');
+                const data = await response.json();
+                alert(`Health Status: ${data.status}\nTimestamp: ${data.timestamp}`);
+            } catch (error) {
+                alert('Error checking health: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

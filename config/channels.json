@@ -1,0 +1,23 @@
+[
+  {
+    "id": "demo1",
+    "name": "Demo Channel 1",
+    "logo": "https://via.placeholder.com/150",
+    "group": "Entertainment",
+    "url": "http://example.com/stream1.m3u8"
+  },
+  {
+    "id": "demo2",
+    "name": "Demo Channel 2",
+    "logo": "https://via.placeholder.com/150",
+    "group": "News",
+    "url": "http://example.com/stream2.m3u8"
+  },
+  {
+    "id": "demo3",
+    "name": "Demo Channel 3",
+    "logo": "https://via.placeholder.com/150",
+    "group": "Sports",
+    "url": "http://example.com/stream3.m3u8"
+  }
+]
